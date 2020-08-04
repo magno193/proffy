@@ -30,7 +30,11 @@
         "ts": "never"
       }
     ],
-    "prettier/prettier": "warn"
+    "prettier/prettier": "warn",
+    "camelcase": "off",
+    "@typescript-eslint/ban-types": "warn",
+    "consistent-return": "warn",
+    "class-methods-use-this": "off"
   },
   "settings": {
     "import/resolver": {
