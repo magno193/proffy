@@ -43,7 +43,9 @@
       ],
       "prettier/prettier": "warn",
       "react/prop-types": "warn",
-      "react/jsx-props-no-spreading": "warn"
+      "react/jsx-props-no-spreading": "warn",
+      "camelcase": "warn",
+      "react/jsx-one-expression-per-line": "off"
     },
     "settings": {
       "import/resolver": {

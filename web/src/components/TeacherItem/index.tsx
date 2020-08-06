@@ -1,35 +1,58 @@
 import React from 'react';
-import './styles.css'
+import './styles.css';
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
+import api from '../../services/api';
 
-const TeacherItem: React.FC = () => {
+export interface ITeacherData {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+interface ITeacherDataProps {
+  teacher: ITeacherData;
+}
+
+const TeacherItem: React.FC<ITeacherDataProps> = ({ teacher }) => {
+  async function createNewConnection() {
+    await api.post('connections', {
+      user_id: teacher.id,
+    });
+  }
   return (
     <article className="teacher-item">
       <header>
-        <img src="https://avatars3.githubusercontent.com/u/34192221?s=460&u=c34d9e441820b91d7f12753efd42cf27b3e8e5a7&v=4" alt="Alexandre Ferreira" />
+        <img src={teacher.avatar} alt={teacher.name} />
         <div>
-          <strong>Alexandre Ferreira</strong>
-          <span>Química</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
-      <p>
-        Entusiasta das melhores tecnologias de química avançada.
-            <br /><br />
-            Apaixonado por explodir coisas em laboratório e por mudar a vida das pessoas através de experiências.
-          </p>
+
+      <p>{teacher.bio}</p>
+
       <footer>
         <p>
           Preço/hora
-              <strong>R$ 80,00</strong>
+          <strong>{teacher.cost}</strong>
         </p>
-        <button type="button">
+        <a
+          onClick={createNewConnection}
+          href={`https://wa.me/${teacher.whatsapp}`}
+          target="_blank"
+          rel="noreferrer"
+        >
           <img src={whatsappIcon} alt="Whatsapp" />
-              Entrar em contato
-            </button>
+          Entrar em contato
+        </a>
       </footer>
     </article>
   );
-}
+};
 
-export default TeacherItem
+export default TeacherItem;
