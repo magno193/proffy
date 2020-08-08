@@ -40,7 +40,8 @@
       }
     ],
     "camelcase": "warn",
-    "react/style-prop-object": "warn"
+    "react/style-prop-object": "warn",
+    "react/prop-types": "warn"
   },
   "settings": {
     "import/resolver": {
