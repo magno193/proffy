@@ -1,5 +1,9 @@
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
+
+interface IIsFavorite{
+  isFavorite: boolean;
+}
 
 export const Container = styled.View`
   background-color: #fff;
@@ -70,7 +74,7 @@ export const ButtonsContainer = styled.View`
   margin-top: 16px;
 `;
 
-export const FavoriteButton = styled(RectButton)`
+export const FavoriteButton = styled(RectButton)<IIsFavorite>`
   background-color: #8257e5;
   width: 56px;
   height: 56px;
@@ -78,6 +82,10 @@ export const FavoriteButton = styled(RectButton)`
   justify-content: center;
   align-items: center;
   margin-right: 8px;
+
+  ${(props) => props.isFavorite !== true && css`
+    background-color: #e33d3d;
+  `}
 `;
 
 export const ContactButton = styled(RectButton)`
