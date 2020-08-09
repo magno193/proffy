@@ -21,7 +21,11 @@ import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
 import whatsappIcon from '../../assets/images/icons/whatsapp.png';
 
-const TeacherItem: React.FC = () => (
+interface ITeacherItemProps {
+  isFavorite?: boolean;
+}
+
+const TeacherItem: React.FC<ITeacherItemProps> = ({ isFavorite }) => (
   <Container>
     <Profile>
       <Avatar source={{ uri: 'https://github.com/magno193.png' }} />
@@ -43,8 +47,10 @@ const TeacherItem: React.FC = () => (
       </Price>
 
       <ButtonsContainer>
-        <FavoriteButton>
-          <Image source={heartOutlineIcon} />
+        <FavoriteButton isFavorite={isFavorite}>
+          {isFavorite
+            ? <Image source={unfavoriteIcon} />
+            : <Image source={heartOutlineIcon} />}
         </FavoriteButton>
 
         <ContactButton>
