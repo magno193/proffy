@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, Linking } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Linking, AsyncStorage } from 'react-native';
 import {
   Container,
   Profile,
@@ -16,6 +16,7 @@ import {
   ContactButton,
   ContactButtonText,
 } from './styles';
+import api from '../../services/api';
 
 import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
@@ -32,13 +33,40 @@ export interface ITeacher {
 }
 
 interface ITeacherItemProps {
-  isFavorite?: boolean;
+  isFavorite: boolean;
   teacher: ITeacher;
 }
 
 const TeacherItem: React.FC<ITeacherItemProps> = ({ isFavorite, teacher }) => {
+  const [favorite, setFavorite] = useState(isFavorite);
+
   function LinkToWhatsapp() {
+    api.post('connections', {
+      user_id: teacher.id,
+    });
     Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`);
+  }
+
+  async function ToggleFavorite() {
+    const favorites = await AsyncStorage.getItem('proffyFavorites');
+
+    let favoritesArray = [];
+    if (favorites) {
+      favoritesArray = JSON.parse(favorites);
+    }
+
+    if (favorite) {
+      const favoriteIndex = favoritesArray.findIndex((teacherItem: ITeacher) => (
+        teacherItem.id === teacher.id));
+
+      favoritesArray.splice(favoriteIndex, 1);
+      setFavorite(false);
+    } else {
+      favoritesArray.push(teacher);
+      setFavorite(true);
+    }
+
+    await AsyncStorage.setItem('proffyFavorites', JSON.stringify(favoritesArray));
   }
   return (
     <Container>
@@ -60,8 +88,8 @@ const TeacherItem: React.FC<ITeacherItemProps> = ({ isFavorite, teacher }) => {
         </Price>
 
         <ButtonsContainer>
-          <FavoriteButton isFavorite={isFavorite}>
-            {isFavorite
+          <FavoriteButton isFavorite={favorite} onPress={ToggleFavorite}>
+            {favorite
               ? <Image source={unfavoriteIcon} />
               : <Image source={heartOutlineIcon} />}
           </FavoriteButton>

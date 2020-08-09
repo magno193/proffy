@@ -1,18 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { AsyncStorage } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { Container, TeacherListScroll } from './styles';
 import PageHeader from '../../components/PageHeader';
-import TeacherItem from '../../components/TeacherItem';
+import TeacherItem, { ITeacher } from '../../components/TeacherItem';
 
-const Favorites:React.FC = () => (
-  <Container>
-    <PageHeader title="Meus Proffys favoritos" />
+const Favorites:React.FC = () => {
+  const [favorites, setFavorites] = useState([]);
 
-    <TeacherListScroll>
-      <TeacherItem isFavorite />
-      <TeacherItem isFavorite />
-      <TeacherItem isFavorite />
-    </TeacherListScroll>
-  </Container>
-);
+  async function loadFavorites() {
+    await AsyncStorage.getItem('proffyFavorites').then((response) => {
+      if (response) {
+        const favoriteTeachers = JSON.parse(response);
+
+        setFavorites(favoriteTeachers);
+      }
+    });
+  }
+
+  useFocusEffect(() => {
+    loadFavorites();
+  });
+  return (
+    <Container>
+      <PageHeader title="Meus Proffys favoritos" />
+
+      <TeacherListScroll>
+        {favorites.map((teacher: ITeacher) => (
+          <TeacherItem
+            key={teacher.id}
+            teacher={teacher}
+            isFavorite
+          />
+        ))}
+      </TeacherListScroll>
+    </Container>
+  );
+};
 
 export default Favorites;
