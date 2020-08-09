@@ -13,14 +13,33 @@ import {
   SubmitText,
 } from './styles';
 import PageHeader from '../../components/PageHeader';
-import TeacherItem from '../../components/TeacherItem';
+import TeacherItem, { ITeacher } from '../../components/TeacherItem';
+import api from '../../services/api';
 
 const TeacherList:React.FC = () => {
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
+  const [subject, setSubject] = useState('');
+  const [weekDay, setWeekDay] = useState('');
+  const [time, setTime] = useState('');
+  const [teachers, setTeachers] = useState([]);
+
   function ToggleFiltersForm() {
     setIsFiltersVisible(!isFiltersVisible);
   }
+
+  async function FiltersSubmit() {
+    const response = await api.get('/classes', {
+      params: {
+        subject,
+        week_day: weekDay,
+        time,
+      },
+    });
+    setIsFiltersVisible(false);
+    setTeachers(response.data);
+  }
+
   return (
     <Container>
       <PageHeader
@@ -34,20 +53,35 @@ const TeacherList:React.FC = () => {
         { isFiltersVisible && (
           <SearchForm>
             <Label>Matéria</Label>
-            <Input placeholder="Qual matéria?" placeholderTextColor="#c1bccc" />
+            <Input
+              value={subject}
+              onChangeText={(text) => setSubject(text)}
+              placeholder="Qual matéria?"
+              placeholderTextColor="#c1bccc"
+            />
 
             <InputGroup>
               <InputBlock>
                 <Label>Dia da semana</Label>
-                <Input placeholder="Qual dia?" placeholderTextColor="#c1bccc" />
+                <Input
+                  value={weekDay}
+                  onChangeText={(text) => setWeekDay(text)}
+                  placeholder="Qual dia?"
+                  placeholderTextColor="#c1bccc"
+                />
               </InputBlock>
 
               <InputBlock>
                 <Label>Horário</Label>
-                <Input placeholder="Qual horário?" placeholderTextColor="#c1bccc" />
+                <Input
+                  value={time}
+                  onChangeText={(text) => setTime(text)}
+                  placeholder="Qual horário?"
+                  placeholderTextColor="#c1bccc"
+                />
               </InputBlock>
             </InputGroup>
-            <SubmitButton>
+            <SubmitButton onPress={FiltersSubmit}>
               <SubmitText>Filtrar</SubmitText>
             </SubmitButton>
           </SearchForm>
@@ -55,9 +89,7 @@ const TeacherList:React.FC = () => {
 
       </PageHeader>
       <TeacherListScroll>
-        <TeacherItem isFavorite={false} />
-        <TeacherItem isFavorite={false} />
-        <TeacherItem isFavorite={false} />
+        {teachers.map((teacher: ITeacher) => <TeacherItem key={teacher.id} teacher={teacher} />)}
       </TeacherListScroll>
     </Container>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, Linking } from 'react-native';
 import {
   Container,
   Profile,
@@ -21,44 +21,58 @@ import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
 import whatsappIcon from '../../assets/images/icons/whatsapp.png';
 
-interface ITeacherItemProps {
-  isFavorite?: boolean;
+export interface ITeacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
 }
 
-const TeacherItem: React.FC<ITeacherItemProps> = ({ isFavorite }) => (
-  <Container>
-    <Profile>
-      <Avatar source={{ uri: 'https://github.com/magno193.png' }} />
-      <ProfileInfo>
-        <Name>Alexandre Ferreira</Name>
-        <Subject>Química</Subject>
-      </ProfileInfo>
-    </Profile>
+interface ITeacherItemProps {
+  isFavorite?: boolean;
+  teacher: ITeacher;
+}
 
-    <Bio>
-      Wannabe musician and full stack developer
-    </Bio>
+const TeacherItem: React.FC<ITeacherItemProps> = ({ isFavorite, teacher }) => {
+  function LinkToWhatsapp() {
+    Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`);
+  }
+  return (
+    <Container>
+      <Profile>
+        <Avatar source={{ uri: teacher.avatar }} />
+        <ProfileInfo>
+          <Name>{teacher.name}</Name>
+          <Subject>{teacher.subject}</Subject>
+        </ProfileInfo>
+      </Profile>
 
-    <Footer>
-      <Price>
-        Preço/hora
-        {'   '}
-        <PriceValue>R$: 20.00</PriceValue>
-      </Price>
+      <Bio>{teacher.bio}</Bio>
 
-      <ButtonsContainer>
-        <FavoriteButton isFavorite={isFavorite}>
-          {isFavorite
-            ? <Image source={unfavoriteIcon} />
-            : <Image source={heartOutlineIcon} />}
-        </FavoriteButton>
+      <Footer>
+        <Price>
+          Preço/hora
+          {'   '}
+          <PriceValue>{`R$: ${teacher.cost}`}</PriceValue>
+        </Price>
 
-        <ContactButton>
-          <Image source={whatsappIcon} />
-          <ContactButtonText>Entrar em contato</ContactButtonText>
-        </ContactButton>
-      </ButtonsContainer>
-    </Footer>
-  </Container>
-);
+        <ButtonsContainer>
+          <FavoriteButton isFavorite={isFavorite}>
+            {isFavorite
+              ? <Image source={unfavoriteIcon} />
+              : <Image source={heartOutlineIcon} />}
+          </FavoriteButton>
+
+          <ContactButton onPress={LinkToWhatsapp}>
+            <Image source={whatsappIcon} />
+            <ContactButtonText>Entrar em contato</ContactButtonText>
+          </ContactButton>
+        </ButtonsContainer>
+      </Footer>
+    </Container>
+  );
+};
 export default TeacherItem;
